@@ -4,9 +4,10 @@
 # 	Date:		2018/03/30
 # 	Purpose:	This script is used to ping bluetooth devices and send alerts when they either leave or arrive
 
-state_file=./state
-bot_properties=./telegram_bot_properties.props
-device_list=./device_list.lst
+root_dir=/home/pi/apps/bluetooth_presence_alerter
+state_file=${root_dir}/state
+bot_properties=${root_dir}/telegram_bot_properties.props
+device_list=${root_dir}/device_list.lst
 
 check_for_state(){
 	if [[ ! -f ${state_file} ]]
