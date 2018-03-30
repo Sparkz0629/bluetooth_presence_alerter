@@ -82,11 +82,11 @@ check_device_in_state(){
 	ping_result=${2}
 	person=${3}
 
-	state_from_file=`grep ${mac_address} ${state_file}`
+	state_from_file=`grep "${person}|${mac_address}" ${state_file}`
 	exists=$?
 	if [[ ${exists} == 1 ]]
 	then
-		echo "${person}|${mac_address}=${ping_result}" >>  ${state_file}
+		echo "${person}|${mac_address}=${ping_result}" >> ${state_file}
 	else
 		new_state=`echo ${state_from_file} | cut -d"=" -f2`
 		compare_states ${ping_result} ${new_state} ${mac_address} ${person}
@@ -112,7 +112,7 @@ while read -r device || [[ -n "$device" ]]; do
 
 	echo "Checking [${person}]'s device: ${mac_address}"
 	ping_address ${mac_address}
-	ping_result=${1}
+	ping_result=${?}
 
 	check_device_in_state ${mac_address} ${ping_result} ${person}
 done < ${device_list} 
