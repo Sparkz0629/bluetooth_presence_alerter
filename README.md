@@ -14,7 +14,11 @@ However, if you are missing l2ping, then install using the following:
 sudo apt-install l2ping
 ```
 
-### Configurations
+### Variable change required in script
+
+You will need to edit the {root_dir} variable in your version of "ping_bluetooth_address.sh" to reference the root directory of where your script is location.
+
+### Configuration files
 
 The following configurations are required:
 
@@ -74,3 +78,24 @@ You will get a response similar to the following. The chat_id is included in the
 }
 ```
 4. Use this value in the config file to send messages to this particular group/private chat.
+
+### Scheduling
+To schdule this to run every 30 seconds, you will need to make two entries in the crontab file.
+
+Run the following:
+```
+export EDITOR=vim
+```
+
+Then run the following:
+```
+crontav -e
+```
+
+And add the following: (Edit the path to your script where necessary)
+
+```
+* * * * * /home/pi/apps/bluetooth_presence_alerter/ping_bluetooth_address.sh >> /tmp/ping_bluetooth_alerter.log
+* * * * * ( sleep 30; /home/pi/apps/bluetooth_presence_alerter/ping_bluetooth_address.sh >> /tmp/ping_bluetooth_alerter.log )
+```
+
