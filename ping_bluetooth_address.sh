@@ -72,7 +72,7 @@ compare_states(){
 
 	if [[ ! "${new_state}" == "${old_state}" ]]
 	then
-		set_state ${device} ${new_state} ${state_file}
+		set_state ${device} ${new_state} ${state_file} ${person}
 		send_alert "${new_state}" "${person}"
 	fi
 }
@@ -94,8 +94,13 @@ check_device_in_state(){
 }
 
 set_state(){
-  awk -v pat="^$1=" -v value="$1=$2" '{ if ($0 ~ pat) print value; else print $0; }' $3 > $3.tmp
-  mv $3.tmp $3
+	device=${1}
+	new_state=${2}
+	state_file=${3}
+	person=${4}
+
+	awk -v pat="^${person}|${device}=" -v value="${person}|${device}=${new_state}" '{ if ($0 ~ pat) print value; else print $0; }' $3 > $3.tmp
+	mv $3.tmp $3
 }
 
 ping_address(){
