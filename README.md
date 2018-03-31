@@ -14,9 +14,16 @@ However, if you are missing l2ping, then install using the following:
 sudo apt-get install l2ping
 ```
 
-### Variable change required in script
+### Global variables 
 
-You will need to edit the {root_dir} variable in your version of "ping_bluetooth_address.sh" to reference the root directory of where your script is location.
+You will need to set the following variables either in your .bashrc file or on every session
+```
+BLUETOOTH_PRESENCE_ALERTER_ROOT
+```
+To set this in the .bashrc file so it is loaded on every session, edit your ~/.bashrc file and add the following
+```
+export BLUETOOTH_PRESENCE_ALERTER_ROOT={THE FULL DIRECTORY WHERE YOUR "ping_bluetooth_address.sh" IS LOCATED}
+```
 
 ### Configuration files
 
