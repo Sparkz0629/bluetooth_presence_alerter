@@ -11,7 +11,7 @@ All the utilities should already be pre-installed on Linux.
 However, if you are missing l2ping, then install using the following:
 
 ```
-sudo apt-install l2ping
+sudo apt-get install l2ping
 ```
 
 ### Variable change required in script
