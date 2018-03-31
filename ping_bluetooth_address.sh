@@ -5,9 +5,12 @@
 # 	Purpose:	This script is used to ping bluetooth devices and send alerts when they either leave or arrive
 
 root_dir=/home/pi/apps/bluetooth_presence_alerter
+#root_dir=.
 state_file=${root_dir}/state
 bot_properties=${root_dir}/telegram_bot_properties.props
 device_list=${root_dir}/device_list.lst
+retry_count=3
+retry_interval=10
 
 check_for_state(){
 	if [[ ! -f ${state_file} ]]
@@ -106,8 +109,26 @@ set_state(){
 
 ping_address(){
 	mac_address=${1}
-	sudo l2ping -c1 ${mac_address} > /dev/null
-	return $?
+	count=0
+	until [[ ${count} -ge ${retry_count} ]]
+	do
+		count=$((count+1))
+		echo "Attempt ${count}/${retry_count}"
+		sudo l2ping -c1 ${mac_address} > /dev/null
+		result=${?}
+		if [[ ${result} == 0 ]]
+		then
+			return 0
+		fi
+
+		#This checks if we still in the retry count, so we dont sleep on the final failure.
+		if [[ ${count} -lt ${retry_count}  ]]
+		then
+			#Failed, so sleep for a set interval before retry
+                	sleep ${retry_interval}
+		fi
+	done
+	return 1
 }
 
 check_for_state
