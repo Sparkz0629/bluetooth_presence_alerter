@@ -6,11 +6,10 @@ A bash based script to ping a list of devices and alert of the presence changes
 
 ### Prerequisites
 
-All the utilities should already be pre-installed on Linux.
-
-However, if you are missing l2ping, then install using the following:
+The following packages should be installed already, but if they aren't, then run the following:
 
 ```
+sudo apt-get install vim
 sudo apt-get install l2ping
 ```
 
