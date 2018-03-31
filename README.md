@@ -16,11 +16,15 @@ sudo apt-get install l2ping
 
 ### Global variables 
 
-You will need to set the following variables either in your .bashrc file or on every session
+You will need to set the following global variable
 ```
 BLUETOOTH_PRESENCE_ALERTER_ROOT
 ```
-To set this in the .bashrc file so it is loaded on every session, edit your ~/.bashrc file and add the following
+To set this, run the following command:
+```
+sudo vim /etc/environment
+```
+and add the following
 ```
 export BLUETOOTH_PRESENCE_ALERTER_ROOT={THE FULL DIRECTORY WHERE YOUR "ping_bluetooth_address.sh" IS LOCATED}
 ```
