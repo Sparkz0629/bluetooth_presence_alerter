@@ -142,7 +142,9 @@ check_for_state
 #Loop indefinitely with sleeps inbetween
 while true
 do
+	echo `date`
 	process_device_file
+	echo
 	sleep ${sleep_interval}
 done
 
