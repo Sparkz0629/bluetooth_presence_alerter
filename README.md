@@ -13,6 +13,11 @@ sudo apt-get install vim
 sudo apt-get install l2ping
 ```
 
+Tmux will also be used to run the script in a session that won't be closed when disconnecting.
+```
+sudo apt-get install tmux
+```
+
 ### Global variables 
 
 You will need to set the following global variable
@@ -97,8 +102,23 @@ You will get a response similar to the following. The chat_id is included in the
 4. Use this value in the config file to send messages to this particular group/private chat.
 
 ### Scheduling
-The script should be run using nohup to allow it to continue running when you disconnect from the session.
-Run the following:
+You can start a new tmux session as follows:
 ```
-nohup ${BLUETOOTH_PRESENCE_ALERTER_ROOT}/ping_bluetooth_address.sh >> /tmp/ping_bluetooth_alerter.log &
+tmux new -s1
 ```
+
+Then run your script:
+```
+${BLUETOOTH_PRESENCE_ALERTER_ROOT}/ping_bluetooth_address.sh
+```
+You can then detach from your session by pressing the following:
+```
+"CTRL+b" and then "d"
+```
+
+To re-attach to you sessionso that you can see your script run etc, run the following
+```
+tmux attach-session -t1
+```
+
+Remember to detach from your session, and then you can safely close your session.
