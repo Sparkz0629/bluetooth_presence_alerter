@@ -8,7 +8,7 @@ root_dir=${BLUETOOTH_PRESENCE_ALERTER_ROOT}
 state_file=${root_dir}/state
 bot_properties=${root_dir}/telegram_bot_properties.props
 device_list=${root_dir}/device_list.lst
-retry_count=30
+retry_count=6
 sleep_interval=10
 
 check_for_state(){
@@ -113,7 +113,7 @@ ping_address(){
 	do
 		count=$((count+1))
 		echo "Attempt ${count}/${retry_count}"
-		sudo l2ping -c1 -t1 ${mac_address} > /dev/null
+		sudo l2ping -c1 ${mac_address} > /dev/null
 		result=${?}
 		if [[ ${result} == 0 ]]
 		then
