@@ -62,7 +62,7 @@ You may also want to set the bluetooth timeout interval on linux. This will stop
 Do this as follows:
 
 ```
-sudo hciconfig hci0 pageto 3200
+sudo hciconfig hci0 pageto 16000
 ```
 
 ### Bot Details

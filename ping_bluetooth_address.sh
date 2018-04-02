@@ -8,7 +8,7 @@ root_dir=${BLUETOOTH_PRESENCE_ALERTER_ROOT}
 state_file=${root_dir}/state
 bot_properties=${root_dir}/telegram_bot_properties.props
 device_list=${root_dir}/device_list.lst
-retry_count=15
+retry_count=3
 sleep_interval=10
 
 check_for_state(){
