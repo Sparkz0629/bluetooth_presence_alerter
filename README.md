@@ -28,9 +28,9 @@ and add the following
 export BLUETOOTH_PRESENCE_ALERTER_ROOT={THE FULL DIRECTORY WHERE YOUR "ping_bluetooth_address.sh" IS LOCATED}
 ```
 
-### Configuration files
+### Configuration
 
-The following configurations are required:
+The following configuration files are required:
 
 ```
 device_list.lst
@@ -51,6 +51,13 @@ If multiple entries are made, the alert will be sent to each config.
 ```
 BOT_API_KEY|CHAT_ID
 BOT_API_KEY_2|CHAT_ID_2
+```
+
+You may also want to set the bluetooth timeout interval on linux. This will stop the script from running for excessive amounts of time.
+Do this as follows:
+
+```
+sudo hciconfig hci0 pageto 3200
 ```
 
 ### Bot Details
