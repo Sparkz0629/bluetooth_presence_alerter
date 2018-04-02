@@ -97,22 +97,8 @@ You will get a response similar to the following. The chat_id is included in the
 4. Use this value in the config file to send messages to this particular group/private chat.
 
 ### Scheduling
-To schdule this to run every 30 seconds, you will need to make two entries in the crontab file.
-
+The script should be run using nohup to allow it to continue running when you disconnect from the session.
 Run the following:
 ```
-export EDITOR=vim
+nohup ${BLUETOOTH_PRESENCE_ALERTER_ROOT}/ping_bluetooth_address.sh >> /tmp/ping_bluetooth_alerter.log &
 ```
-
-Then run the following:
-```
-crontav -e
-```
-
-And add the following: (Edit the path to your script where necessary)
-
-```
-* * * * * /home/pi/apps/bluetooth_presence_alerter/ping_bluetooth_address.sh >> /tmp/ping_bluetooth_alerter.log
-* * * * * ( sleep 30; /home/pi/apps/bluetooth_presence_alerter/ping_bluetooth_address.sh >> /tmp/ping_bluetooth_alerter.log )
-```
-
