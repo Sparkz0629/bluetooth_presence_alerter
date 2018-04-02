@@ -8,8 +8,8 @@ root_dir=${BLUETOOTH_PRESENCE_ALERTER_ROOT}
 state_file=${root_dir}/state
 bot_properties=${root_dir}/telegram_bot_properties.props
 device_list=${root_dir}/device_list.lst
-retry_count=3
-retry_interval=10
+retry_count=30
+sleep_interval=10
 
 check_for_state(){
 	if [[ ! -f ${state_file} ]]
@@ -113,33 +113,36 @@ ping_address(){
 	do
 		count=$((count+1))
 		echo "Attempt ${count}/${retry_count}"
-		sudo l2ping -c1 ${mac_address} > /dev/null
+		sudo l2ping -c1 -t1 ${mac_address} > /dev/null
 		result=${?}
 		if [[ ${result} == 0 ]]
 		then
 			return 0
 		fi
-
-		#This checks if we still in the retry count, so we dont sleep on the final failure.
-		if [[ ${count} -lt ${retry_count}  ]]
-		then
-			#Failed, so sleep for a set interval before retry
-                	sleep ${retry_interval}
-		fi
 	done
 	return 1
 }
 
+process_device_file(){
+	while read -r device || [[ -n "$device" ]]; do
+        	person=`echo ${device} | cut -d"=" -f1`
+        	mac_address=`echo ${device} | cut -d"=" -f2`
+	
+        	echo "Checking [${person}]'s device: ${mac_address}"
+        	ping_address ${mac_address}
+        	ping_result=${?}
+	
+        	check_device_in_state ${mac_address} ${ping_result} ${person}
+	done < ${device_list}
+}
+
+#First check if state file exists
 check_for_state
 
-while read -r device || [[ -n "$device" ]]; do
-	person=`echo ${device} | cut -d"=" -f1`
-	mac_address=`echo ${device} | cut -d"=" -f2`
-
-	echo "Checking [${person}]'s device: ${mac_address}"
-	ping_address ${mac_address}
-	ping_result=${?}
-
-	check_device_in_state ${mac_address} ${ping_result} ${person}
-done < ${device_list} 
+#Loop indefinitely with sleeps inbetween
+while true
+do
+	process_device_file
+	sleep ${sleep_interval}
+done
 
