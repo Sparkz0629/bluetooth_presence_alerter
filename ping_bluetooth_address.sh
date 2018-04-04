@@ -9,7 +9,7 @@ state_file=${root_dir}/state
 current_run_state=${root_dir}/state_current_run
 bot_properties=${root_dir}/telegram_bot_properties.props
 device_list=${root_dir}/device_list.lst
-retry_count=6
+retry_count=5
 sleep_interval=10
 
 check_for_state(){
@@ -64,7 +64,7 @@ send_bot_alert(){
 	chat_id=${2}
 	message=${3}
 
-#	curl -s -X POST https://api.telegram.org/bot${bot_key}/sendMessage -d text="${message}" -d chat_id="${chat_id}" >> /dev/null
+	curl -s -X POST https://api.telegram.org/bot${bot_key}/sendMessage -d text="${message}" -d chat_id="${chat_id}" >> /dev/null
 
 }
 
