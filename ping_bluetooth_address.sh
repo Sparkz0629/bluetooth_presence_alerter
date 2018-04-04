@@ -116,7 +116,6 @@ ping_address(){
 		echo "Attempt ${count}/${retry_count}"
 		sudo l2ping -c1 ${mac_address} > /dev/null
 		result=${?}
-		result=0
 		if [[ ${result} == 0 ]]
 		then
 			return 0
