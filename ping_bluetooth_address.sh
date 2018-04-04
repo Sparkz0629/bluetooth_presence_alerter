@@ -164,7 +164,7 @@ process_device_file(){
 	
 	#Now we check if there is alerting required
 	check_if_alerting_required
-	#rm ${current_run_state}
+	rm ${current_run_state}
 }
 
 #First check if state file exists

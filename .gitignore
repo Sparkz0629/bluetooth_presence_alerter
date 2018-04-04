@@ -1,3 +1,4 @@
 device_list.lst
 telegram_bot_properties.props
 state
+state_current_run
