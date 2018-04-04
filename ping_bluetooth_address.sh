@@ -146,11 +146,16 @@ check_if_alerting_required(){
 	fi
 }
 
-process_device_file(){
-	if [[ -f ${current_run_state} ]]
+delete_state_file(){
+	file_to_delete=${1}
+	if [[ -f ${file_to_delete} ]]
 	then
-		rm ${current_run_state}
+		rm ${file_to_delete}
 	fi
+}
+
+process_device_file(){
+	delete_state_file ${current_run_state}
 	while read -r device || [[ -n "$device" ]]; do
         	person=`echo ${device} | cut -d"=" -f1`
         	mac_address=`echo ${device} | cut -d"=" -f2`
@@ -164,7 +169,7 @@ process_device_file(){
 	
 	#Now we check if there is alerting required
 	check_if_alerting_required
-	rm ${current_run_state}
+	delete_state_file ${current_run_state}
 }
 
 #First check if state file exists
