@@ -6,9 +6,10 @@
 
 root_dir=${BLUETOOTH_PRESENCE_ALERTER_ROOT}
 state_file=${root_dir}/state
+current_run_state=${root_dir}/state_current_run
 bot_properties=${root_dir}/telegram_bot_properties.props
 device_list=${root_dir}/device_list.lst
-retry_count=3
+retry_count=6
 sleep_interval=10
 
 check_for_state(){
@@ -63,7 +64,7 @@ send_bot_alert(){
 	chat_id=${2}
 	message=${3}
 
-	curl -s -X POST https://api.telegram.org/bot${bot_key}/sendMessage -d text="${message}" -d chat_id="${chat_id}" >> /dev/null
+#	curl -s -X POST https://api.telegram.org/bot${bot_key}/sendMessage -d text="${message}" -d chat_id="${chat_id}" >> /dev/null
 
 }
 
@@ -76,7 +77,7 @@ compare_states(){
 	if [[ ! "${new_state}" == "${old_state}" ]]
 	then
 		set_state ${device} ${new_state} ${state_file} ${person}
-		send_alert "${new_state}" "${person}"
+		echo "${person}|${new_state}" >> ${current_run_state}
 	fi
 }
 
@@ -115,6 +116,7 @@ ping_address(){
 		echo "Attempt ${count}/${retry_count}"
 		sudo l2ping -c1 ${mac_address} > /dev/null
 		result=${?}
+		result=0
 		if [[ ${result} == 0 ]]
 		then
 			return 0
@@ -123,7 +125,32 @@ ping_address(){
 	return 1
 }
 
+check_if_alerting_required(){
+	if [[ -f ${current_run_state} ]]
+	then
+		#The file exists, meaning there were state changes
+		if [[ ! $(wc -l <  ${current_run_state}) -eq $(wc -l < ${device_list}) ]]
+		then
+			#The line count from state change file doesn't matches line count from device list, so the states didnt change together
+			while read -r state_change || [[ -n "$state_change" ]]; do
+				current_person=`echo ${state_change} | cut -d"|" -f1`
+				current_person_state=`echo ${state_change} | cut -d"|" -f2`
+				other_person_state=`cat ${state_file} | grep -v ${current_person} | cut -d"=" -f2`
+				if [[ ! "${other_person_state}" == "0"  ]]
+				then
+					#Other person is not home, so lets alert
+					send_alert "${current_person_state}" "${current_person}"
+				fi
+			done < ${current_run_state}
+		fi
+	fi
+}
+
 process_device_file(){
+	if [[ -f ${current_run_state} ]]
+	then
+		rm ${current_run_state}
+	fi
 	while read -r device || [[ -n "$device" ]]; do
         	person=`echo ${device} | cut -d"=" -f1`
         	mac_address=`echo ${device} | cut -d"=" -f2`
@@ -131,9 +158,13 @@ process_device_file(){
         	echo "Checking [${person}]'s device: ${mac_address}"
         	ping_address ${mac_address}
         	ping_result=${?}
-	
+
         	check_device_in_state ${mac_address} ${ping_result} ${person}
 	done < ${device_list}
+	
+	#Now we check if there is alerting required
+	check_if_alerting_required
+	#rm ${current_run_state}
 }
 
 #First check if state file exists
@@ -143,7 +174,7 @@ check_for_state
 while true
 do
 	echo `date`
-	process_device_file
+	process_device_file 
 	echo
 	sleep ${sleep_interval}
 done
