@@ -10,7 +10,7 @@ current_run_state=${root_dir}/state_current_run
 bot_properties=${root_dir}/telegram_bot_properties.props
 device_list=${root_dir}/device_list.lst
 retry_count=5
-sleep_interval=10
+sleep_interval=60
 
 check_for_state(){
 	if [[ ! -f ${state_file} ]]
